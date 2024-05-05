@@ -130,41 +130,14 @@ class HuffmanTree:
         """Define self.root to be the Huffman tree for encoding a set of characters,
            given a map from character to frequency.
         """
-        keys = freqs.keys()
-        list_leaves= []
-        list_freq= []
-        for char in keys:
-            list_leaves.append(Leaf(freqs[char], char))
-            list_freq.append(freqs[char])
-        if len(list_freq) == 1:
-            self.root = list_leaves.pop()
-        while len(list_freq) > 1:
-            sorted_list = sorted(list_freq, reverse=True)
-            minimum = sorted_list.pop()
-            for i in list_leaves:
-                if i.count == minimum:
-                    list_leaves.remove(i)
-                    minimum_char = i.min_char
-                    branch1 = i
-                    break
-            second_min = sorted_list.pop()
-            for j in list_leaves:
-                if j.count == second_min:
-                    list_leaves.remove(j)
-                    second_min_char = j.min_char
-                    branch2 = j
-                    break
-            if minimum == second_min:
-                minimum = minimum_char
-                second_min = second_min_char
-            if minimum < second_min:
-                self.root = Node(branch1, branch2)
-            else:
-                self.root = Node(branch2, branch1)
-            list_freq = sorted_list
-            list_freq.append(self.root.count)
-            list_leaves.append(self.root)
-        return tree
+        nodes = [Leaf(count, c) for (c, count) in freqs.items()]
+        while len(nodes) > 1:
+            nodes.sort(key=lambda n: (n.count, n.min_char), reverse=True)
+            s1 = nodes.pop()
+            s2 = nodes.pop()
+            consoldated = Node(s1, s2)
+            nodes.append(consoldated)
+        self.root = nodes[0]
 
     def build_from_string(self, s):
         """Convert the string representation of a Huffman tree, as generated
